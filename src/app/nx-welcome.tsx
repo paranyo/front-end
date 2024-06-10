@@ -1,7 +1,7 @@
-import { Box, Button, Input, Modal, ModalBody, ModalContent, ModalOverlay, Text, useDisclosure } from "@chakra-ui/react";
+import { Box, Button, Divider, Flex, Image, Input, Modal, ModalBody, ModalContent, ModalOverlay, Text, useDisclosure } from "@chakra-ui/react";
 import { atom, useAtom } from "jotai";
 import { useEffect, useState } from "react";
-
+import Logo from "public/logo.png";
 import { getData, postData } from "src/lib/api";
 import { useSearch } from "src/lib/useSearchAtom";
 
@@ -168,72 +168,96 @@ export function Main({ title }: { title: string }) {
   useEffect(() => {
     console.log(product)
   }, [product])
+  const shortenWords = (str: string, length = 26) => {
+    let result = '';
+    if (str.length > length) {
+      result = str.substr(0, length - 2) + '...';
+    } else {
+      result = str;
+    }
+    return result;
+  };
 
   return (
     <Box w="100%" pos="relative">
-      <Box maxW={'375'} m="0 auto" border={'1px solid black'} p="4">
-        <Box w='100%' h='64px'>
-          헤더 영역 / 장바구니로
+      <Box maxW={'375'} m="0 auto" border={'1px solid black'}>
+        <Box w='100%' h='64px' p="4">
+          <Image src={Logo} />
+        </Box>
+        <Box mt={4} p="4" mr={'2'} ml={'2'}>
+          <Input onChange={TextSearch.onChange} value={TextSearch.value} placeholder="상품명을 입력해주세요. (자동 검색)" textAlign={'center'} border="2px solid black" />
         </Box>
         <Box>
-          <Input onChange={TextSearch.onChange} value={TextSearch.value} placeholder="상품명을 입력해주세요. (자동 검색)" />
-        </Box>
-        <Box mt="4">
-          <Box>
-            {array && array.map((item) => {
+          {array.length > 0 &&
+            (<Box p="4">
+              <Text p={[0, 2]} fontSize="lg" fontWeight={'bold'}>아래 상품 중 검색 대상을 클릭해주세요</Text>
+              {array.map((item) => {
+                return (
+                  <Box textOverflow={'ellipsis'} overflow={'hidden'} whiteSpace={'nowrap'}
+                    border="2px solid black" borderRadius={4} p={[2, 2]} m={3} onClick={() => onClickProduct(item.barcode)}>
+                    <Text>{shortenWords(item.name)}</Text>
+                  </Box>
+                )
+              })}
+            </Box>)}
+          {product.length > 0 &&
+            <Box background={'#f0f0f0'} p={4}>
+              <Text p={[0, 2]} fontSize="lg" fontWeight={'bold'}>상품 상세</Text>
+              {product.map((item: GetProduct) => {
+                return (
+                  <Box border="2px solid black" p={[3, 6]} m={2} borderRadius={8} background="white">
+                    <Text fontWeight={'bold'}>{shortenWords(item.name, 22)}</Text>
+                    <Text fontWeight={'bold'}>{item.price}원</Text>
+                    <Flex mt={1}>
+                      <Box flex="2">
+                        <Text>최소 주문 수량 | {item.stock}개</Text>
+                        <Text>구매처 | {item.Mall.name}</Text>
+                      </Box>
+                      <Box flex="1">
+                        {JSON.stringify(item.delivery) === 'true' ?
+                          <Button colorScheme='green' size="lg" w="100%" onClick={() => handleCart(item)}>담기</Button>
+                          : <Button size="lg" w="100%" disabled>품절</Button>}
+                      </Box>
+                    </Flex>
+                    <Text>{item.soldOut}</Text>
+                    <Text>{item.delivery}</Text>
+                  </Box>
+                )
+              })}
+            </Box>
+          }
+          {cart.length > 0 && <Box p={4}>
+            <Text p={[0, 2]} fontSize="lg" fontWeight={'bold'}>장바구니</Text>
+            {cart.map((item) => {
               return (
-                <Box border="1px solid red" m={1} onClick={() => onClickProduct(item.barcode)}>
-                  <Text>{item.name}</Text>
-                  <Text>{item.barcode}</Text>
+                <Box border="2px solid black" p={[3, 6]} m={2} borderRadius={8} background="white">
+                  <Text fontWeight={'bold'}>{shortenWords(item.name)}</Text>
+                  <Text fontWeight={'bold'}>{item.price}원 / {item.stock}개 / {item.Mall.name}</Text>
+                  <Flex gap="2" mt={2}>
+                    <Text fontWeight="bolder">주문 개수 {item.count}개</Text>
+                    <Button size="sm" colorScheme="green" onClick={() => ItemIncrease(item.name)}>추가</Button>
+                    <Button size="sm" colorScheme="green" onClick={() => ItemDecrease(item.name)}>빼기</Button>
+                    <Button size="sm" colorScheme="red" variant="outline" onClick={() => handleRemoveCart(item.name)}>삭제</Button>
+                  </Flex>
                 </Box>
               )
             })}
           </Box>
-          <Box>
-            <Box>
-              {product && product.map((item: GetProduct) => {
-                return (
-                  <Box border="1px solid red" m={1}>
-                    <Text>{item.name}</Text>
-                    <Text>{item.price}</Text>
-                    <Text>{item.stock}</Text>
-                    <Text>{item.soldOut}</Text>
-                    <Text>{item.delivery}</Text>
-                    <Text>{item.Mall.name}</Text>
-                    <Button onClick={() => handleCart(item)}>장바구니 담기</Button>
-                  </Box>
-                )
-              })}
-              {/* {JSON.stringify(product)} */}
+          }
+          <Box textAlign={'center'} background="#f0f0f0" p="4">
+            <Text fontWeight="bolder" textAlign={'center'} fontSize="2xl">합계 금액 {cart.reduce((acc, item) => { return acc + item.price * item.stock * item.count }, 0)}원</Text>
+            <Box p="2" textAlign={'center'}>
+              <Button onClick={() => onOpen()} colorScheme="blue" size="md" w="40%">주문하기</Button>
             </Box>
+            <Text fontSize="xs"> * 주문하기 클릭 시, MooLuck에서 확인 후 연락 드립니다.</Text>
+            <Text fontSize="xs"> * 배송비는 최종 주문서에서 별도 안내 드립니다. </Text>
           </Box>
-          <Box>
-            <Text>장바구니</Text>
-            {
-              cart && cart.map((item) => {
-                return (
-                  <Box border="1px solid red" m={1}>
-                    <Text>{item.name}</Text>
-                    <Text>{item.price}</Text>
-                    <Text>{item.stock}</Text>
-                    <Text>{item.soldOut}</Text>
-                    <Text>{item.delivery}</Text>
-                    <Text>{item.Mall.name}</Text>
-                    <Text>{item.count}</Text>
-                    <Button onClick={() => ItemIncrease(item.name)}>증가</Button>
-                    <Button onClick={() => ItemDecrease(item.name)}>감소</Button>
-                    <Button onClick={() => handleRemoveCart(item.name)}>삭제</Button>
-                  </Box>
-                )
-              })
-            }
-            <Text>총 금액 {cart.reduce((acc, item) => { return acc + item.price * item.stock * item.count }, 0)}원</Text>
-            <Button onClick={() => onOpen()}>주문하기</Button>
-            <Button onClick={() => clearCart()}>비우기</Button>
-          </Box>
-          <Box>
-            푸터
-            고객센터 / 안내 / 이용약관 / 개인정보처리방침
+          <Box p={[4, 6]}>
+            <Text fontSize="xs">・재고 및 판매 가격은 도매몰 상황에 따라 달라질 수 있습니다.</Text>
+            <Text fontSize="xs">・도매몰마다 최소 주문 수량이나, 무료배송 조건, 배송 가능 여부의 차이가 있을 수 있습니다.</Text>
+            <Text fontSize="xs">・[무럭]은 각 도매몰의 상품 정보 중개자로서, 상품의 배송 책임은 해당 도매몰에 있습니다.</Text>
+            <Text fontSize="xs">・판매 가격이 위 정보와 다르거나, 서비스 이용 문의가 있으시면 카카오톡 채널로 연락주세요.</Text>
+            <Text fontSize="xs">(카카오톡 링크: http://pf.kakao.com/_HDucG/chat)</Text>
           </Box>
 
         </Box>
@@ -241,15 +265,24 @@ export function Main({ title }: { title: string }) {
       </Box>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent maxW={'375'} p="4" >
-          <Text>
-            안내사항
-            주문서를 접수해주시면 담당 매니저가 영업시간 (오전 10시 ~ 오후 10시) 내에 즉시 연락드립니다.
-            배송비, 품절, 업체 사정 등의 이유로 추가 요금을 결제하거나 환불 받을 수 있습니다.
+        <ModalContent maxW={'375'} p="6" >
+          <Image src={Logo} />
+          <Text mt="4" textAlign={'center'} fontSize="xl" fontWeight={'bold'}>
+            주문이 접수되었습니다.
           </Text>
-          <Input placeholder="이름" onChange={onChangeName} value={name} />
-          <Input placeholder="전화번호" onChange={onChangePhone} value={phone} />
-          <Text>
+          <Text textAlign={'center'} fontSize="xl" fontWeight={'bold'} mb="4">
+            아래 정보 입력 후, 주문을 완료해 주세요.
+          </Text>
+          <Input border="2px solid black" placeholder="이름" onChange={onChangeName} value={name} mb="2" />
+          <Input border="2px solid black" placeholder="전화번호" onChange={onChangePhone} value={phone} mb="2" />
+          <Button onClick={() => order()} colorScheme="blue">주문 완료하기</Button>
+          <Divider m="4" />
+          <Text textAlign={'center'} fontWeight={'bold'} fontSize="lg">주문 완료 시 담당 매니저가 연락드립니다.</Text>
+          <Text textAlign={'center'}>*영업 시간 오전 10시 ~ 오후 12시</Text>
+          <Divider m="4" />
+          <Text fontWeight={'bold'} fontSize="lg">*안내사항*</Text>
+          <Text fontSize="sm"> 업체 사정에 따른 품절 및 배송 조건 변동이 있을 수 있습니다. 이 경우 결제 금액도 함께 변동될 수 있으니, 이 점 양해 부탁드립니다. </Text>
+          {/* <Text>
             주문 상품
             <Box>
               {cart && cart.map((item) => {
@@ -266,13 +299,10 @@ export function Main({ title }: { title: string }) {
                 )
               })}
             </Box>
-          </Text>
-          <Text>
+          </Text> */}
+          {/* <Text>
             <Text>총 금액 {cart.reduce((acc, item) => { return acc + item.price * item.stock * item.count }, 0)}원</Text>
-          </Text>
-          <Button onClick={() => order()}>
-            주문하기
-          </Button>
+          </Text> */}
         </ModalContent>
 
       </Modal>
