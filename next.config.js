@@ -6,7 +6,7 @@ const nextConfig = {
     return [
       {
         source: '/:path*',
-        destination: 'https://api.mooluck.xyz/api/:path*',
+        destination: 'https://api.mooluck.xyz/:path*',
         permanent: true,
       },
     ];
