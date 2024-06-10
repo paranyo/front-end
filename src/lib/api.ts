@@ -20,10 +20,9 @@ interface APIResponse<T> {
 
 
 const client: Axios = axios.create({
-  baseURL: 'http://127.0.0.1:4000',
+  baseURL: 'http://43.203.210.23',
   headers: {
     'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': 'http://127.0.0.1:4000'
   },
   withCredentials: true
 })
