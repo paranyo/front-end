@@ -21,11 +21,12 @@ interface APIResponse<T> {
 
 const client: Axios = axios.create({
   baseURL: 'https://api.mooluck.xyz/',
+  withCredentials: true,
+
   headers: {
     'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': ['https://mooluck.xyz', 'https://www.mooluck.xyz/']
+    'Access-Control-Allow-Origin': 'https://www.mooluck.xyz/'
   },
-  withCredentials: true,
 })
 
 export const getData = async <T>(url: string, config?: AxiosRequestConfig): Promise<APIResponse<T>> => {
