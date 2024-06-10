@@ -20,10 +20,10 @@ interface APIResponse<T> {
 
 
 const client: Axios = axios.create({
-  baseURL: 'https://api.mooluck.xyz/v1/',
+  baseURL: 'https://api.mooluck.xyz/',
   headers: {
     'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': 'https://api.mooluck.xyz'
+    'Access-Control-Allow-Origin': 'https://mooluck.xyz'
   },
   withCredentials: true,
 })
