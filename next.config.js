@@ -7,6 +7,7 @@ const nextConfig = {
       {
         source: '/:path*',
         destination: 'https://api.mooluck.xyz/:path*',
+        permanent: true,
       },
     ];
   },
