@@ -211,10 +211,10 @@ export function Main({ title }: { title: string }) {
                     <Flex mt={1}>
                       <Box flex="2">
                         <Text>최소 주문 수량 | {item.stock}개</Text>
-                        <Text>구매처 | {item.Mall.name}</Text>
+                        <Text> {item.Mall.name}</Text>
                       </Box>
                       <Box flex="1">
-                        {JSON.stringify(item.delivery) === 'true' ?
+                        {JSON.stringify(item.soldOut) === 'true' ?
                           <Button colorScheme='green' size="lg" w="100%" onClick={() => handleCart(item)}>담기</Button>
                           : <Button size="lg" w="100%" disabled>품절</Button>}
                       </Box>
@@ -244,24 +244,35 @@ export function Main({ title }: { title: string }) {
             })}
           </Box>
           }
-          <Box textAlign={'center'} background="#f0f0f0" p="4">
-            <Text fontWeight="bolder" textAlign={'center'} fontSize="2xl">합계 금액 {cart.reduce((acc, item) => { return acc + item.price * item.stock * item.count }, 0)}원</Text>
-            <Box p="2" textAlign={'center'}>
-              <Button onClick={() => onOpen()} colorScheme="blue" size="md" w="40%">주문하기</Button>
+          {cart.length > 0 && (
+            <Box>
+              <Box textAlign={'center'} background="#f0f0f0" p="4">
+                <Text fontWeight="bolder" textAlign={'center'} fontSize="2xl">합계 금액
+                  {cart.reduce((acc, item) => { return acc + item.price * item.stock * item.count }, 0)}
+                  원</Text>
+                <Box p="2" textAlign={'center'}>
+                  <Button onClick={() => onOpen()} colorScheme="blue" size="md" w="40%">주문하기</Button>
+                </Box>
+                <Text fontSize="xs"> * 주문하기 클릭 시, MooLuck에서 확인 후 연락 드립니다.</Text>
+                <Text fontSize="xs"> * 배송비는 최종 주문서에서 별도 안내 드립니다. </Text>
+              </Box>
+              <Box p={[4, 6]}>
+                <Text fontSize="xs">・재고 및 판매 가격은 도매몰 상황에 따라 달라질 수 있습니다.</Text>
+                <Text fontSize="xs">・도매몰마다 최소 주문 수량이나, 무료배송 조건, 배송 가능 여부의 차이가 있을 수 있습니다.</Text>
+                <Text fontSize="xs">・[무럭]은 각 도매몰의 상품 정보 중개자로서, 상품의 배송 책임은 해당 도매몰에 있습니다.</Text>
+                <Text fontSize="xs">・판매 가격이 위 정보와 다르거나, 서비스 이용 문의가 있으시면 카카오톡 채널로 연락주세요.</Text>
+                <Text fontSize="xs">(카카오톡 링크: http://pf.kakao.com/_HDucG/chat)</Text>
+                <Button mt={2} bg='#ffe300' color="black" w="100%" onClick={() => window.open("http://pf.kakao.com/_HDucG/chat")}>상담원 문의하기</Button>
+              </Box>
             </Box>
-            <Text fontSize="xs"> * 주문하기 클릭 시, MooLuck에서 확인 후 연락 드립니다.</Text>
-            <Text fontSize="xs"> * 배송비는 최종 주문서에서 별도 안내 드립니다. </Text>
-          </Box>
-          <Box p={[4, 6]}>
-            <Text fontSize="xs">・재고 및 판매 가격은 도매몰 상황에 따라 달라질 수 있습니다.</Text>
-            <Text fontSize="xs">・도매몰마다 최소 주문 수량이나, 무료배송 조건, 배송 가능 여부의 차이가 있을 수 있습니다.</Text>
-            <Text fontSize="xs">・[무럭]은 각 도매몰의 상품 정보 중개자로서, 상품의 배송 책임은 해당 도매몰에 있습니다.</Text>
-            <Text fontSize="xs">・판매 가격이 위 정보와 다르거나, 서비스 이용 문의가 있으시면 카카오톡 채널로 연락주세요.</Text>
-            <Text fontSize="xs">(카카오톡 링크: http://pf.kakao.com/_HDucG/chat)</Text>
-          </Box>
-
+          )}
+          {(cart.length < 1 || product.length < 1 || array.length < 1) &&
+            <Box textAlign="center" p={4}>
+              <Text textAlign={'center'} fontSize="xl" fontWeight={"bolder"}>안녕하세요.</Text>
+              <Text textAlign={'center'} fontSize="lg" fontWeight={"bolder"}>상품을 검색하시면 이용이 시작됩니다.</Text>
+            </Box>
+          }
         </Box>
-
       </Box>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -304,7 +315,6 @@ export function Main({ title }: { title: string }) {
             <Text>총 금액 {cart.reduce((acc, item) => { return acc + item.price * item.stock * item.count }, 0)}원</Text>
           </Text> */}
         </ModalContent>
-
       </Modal>
     </Box >
 
