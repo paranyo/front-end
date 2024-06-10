@@ -207,7 +207,7 @@ export function Main({ title }: { title: string }) {
                 return (
                   <Box border="2px solid black" p={[3, 6]} m={2} borderRadius={8} background="white">
                     <Text fontWeight={'bold'}>{shortenWords(item.name, 22)}</Text>
-                    <Text fontWeight={'bold'}>{item.price}원</Text>
+                    <Text fontWeight={'bold'}>{(item.price).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원</Text>
                     <Flex mt={1}>
                       <Box flex="2">
                         <Text>최소 주문 수량 | {item.stock}개</Text>
@@ -232,7 +232,7 @@ export function Main({ title }: { title: string }) {
               return (
                 <Box border="2px solid black" p={[3, 6]} m={2} borderRadius={8} background="white">
                   <Text fontWeight={'bold'}>{shortenWords(item.name)}</Text>
-                  <Text fontWeight={'bold'}>{item.price}원 / {item.stock}개 / {item.Mall.name}</Text>
+                  <Text fontWeight={'bold'}>{(item.price).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원 / {item.stock}개 / {item.Mall.name}</Text>
                   <Flex gap="2" mt={2}>
                     <Text fontWeight="bolder">주문 개수 {item.count}개</Text>
                     <Button size="sm" colorScheme="green" onClick={() => ItemIncrease(item.name)}>추가</Button>
@@ -247,9 +247,7 @@ export function Main({ title }: { title: string }) {
           {cart.length > 0 && (
             <Box>
               <Box textAlign={'center'} background="#f0f0f0" p="4">
-                <Text fontWeight="bolder" textAlign={'center'} fontSize="2xl">합계 금액
-                  {cart.reduce((acc, item) => { return acc + item.price * item.stock * item.count }, 0)}
-                  원</Text>
+                <Text fontWeight="bolder" textAlign={'center'} fontSize="2xl">합계 금액 {(cart.reduce((acc, item) => { return acc + item.price * item.stock * item.count }, 0)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원</Text>
                 <Box p="2" textAlign={'center'}>
                   <Button onClick={() => onOpen()} colorScheme="blue" size="md" w="40%">주문하기</Button>
                 </Box>
