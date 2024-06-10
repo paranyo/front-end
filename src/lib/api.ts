@@ -23,8 +23,8 @@ const client: Axios = axios.create({
   baseURL: 'https://api.mooluck.xyz',
   headers: {
     'Content-Type': 'application/json',
-  },
-  withCredentials: true
+    'Access-Control-Allow-Origin': 'http://localhost:4000'
+  }
 })
 
 export const getData = async <T>(url: string, config?: AxiosRequestConfig): Promise<APIResponse<T>> => {
