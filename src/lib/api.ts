@@ -20,7 +20,7 @@ interface APIResponse<T> {
 
 
 const client: Axios = axios.create({
-  baseURL: 'https://43.203.210.23',
+  baseURL: 'https://api.mooluck.xyz',
   headers: {
     'Content-Type': 'application/json',
   },
