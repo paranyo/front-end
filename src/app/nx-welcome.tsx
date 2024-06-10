@@ -214,7 +214,7 @@ export function Main({ title }: { title: string }) {
                         <Text> {item.Mall.name}</Text>
                       </Box>
                       <Box flex="1">
-                        {JSON.stringify(item.soldOut) === 'true' ?
+                        {JSON.stringify(item.soldOut) === 'false' ?
                           <Button colorScheme='green' size="lg" w="100%" onClick={() => handleCart(item)}>담기</Button>
                           : <Button size="lg" w="100%" disabled>품절</Button>}
                       </Box>
