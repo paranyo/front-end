@@ -180,7 +180,7 @@ export function Main({ title }: { title: string }) {
 
   return (
     <Box w="100%" pos="relative">
-      <Box maxW={'375'} m="0 auto" border={'1px solid black'}>
+      <Box maxW={'375'} m="0 auto">
         <Box w='100%' h='64px' p="4">
           <Image src={Logo} />
         </Box>
@@ -260,14 +260,17 @@ export function Main({ title }: { title: string }) {
                 <Text fontSize="xs">・[무럭]은 각 도매몰의 상품 정보 중개자로서, 상품의 배송 책임은 해당 도매몰에 있습니다.</Text>
                 <Text fontSize="xs">・판매 가격이 위 정보와 다르거나, 서비스 이용 문의가 있으시면 카카오톡 채널로 연락주세요.</Text>
                 <Text fontSize="xs">(카카오톡 링크: http://pf.kakao.com/_HDucG/chat)</Text>
+                <Text fontSize="xs">사업자번호: 555-44-00770 | 상호명: 리오 | 대표자: 한규태, 임경택 | 고객센터: 010-2691-3194</Text>
                 <Button mt={2} bg='#ffe300' color="black" w="100%" onClick={() => window.open("http://pf.kakao.com/_HDucG/chat")}>상담원 문의하기</Button>
               </Box>
             </Box>
           )}
-          {(cart.length < 1 || product.length < 1 || array.length < 1) &&
-            <Box textAlign="center" p={4}>
+          {!(cart.length > 0 || product.length > 0 || array.length > 0) &&
+            <Box textAlign={'center'} background="#f0f0f0" p="4">
               <Text textAlign={'center'} fontSize="xl" fontWeight={"bolder"}>안녕하세요.</Text>
               <Text textAlign={'center'} fontSize="lg" fontWeight={"bolder"}>상품을 검색하시면 이용이 시작됩니다.</Text>
+              <Divider m="2" />
+              <Text fontSize="xs">사업자번호: 555-44-00770 | 상호명: 리오 | 대표자: 한규태, 임경택 | 고객센터: 010-2691-3194</Text>
             </Box>
           }
         </Box>
