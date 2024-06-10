@@ -23,7 +23,7 @@ const client: Axios = axios.create({
   baseURL: 'https://api.mooluck.xyz/',
   headers: {
     'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': 'https://mooluck.xyz'
+    'Access-Control-Allow-Origin': ['https://mooluck.xyz', 'https://www.mooluck.xyz/']
   },
   withCredentials: true,
 })
