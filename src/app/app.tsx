@@ -1,17 +1,11 @@
-import styled from 'styled-components';
+import { ChakraProvider } from '@chakra-ui/react'
 
-import NxWelcome from './nx-welcome';
-
-const StyledApp = styled.div`
-  // Your style here
-`;
+import Main from './nx-welcome'
 
 export function App() {
   return (
-    <StyledApp>
-      <NxWelcome title="front-end" />
-    </StyledApp>
-  );
+    <ChakraProvider>
+      <Main title="asd" />
+    </ChakraProvider>
+  )
 }
-
-export default App;
