@@ -115,7 +115,7 @@ export function Main({ title }: { title: string }) {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const { TextSearch } = useSearch();
-  const debounce = useDebounce(TextSearch.value, 500);
+  const debounce = useDebounce(TextSearch.value, 1000);
   const [array, setArray] = useState<Data[]>([]);
   const [product, setProduct] = useState<GetProduct[] | any>([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
