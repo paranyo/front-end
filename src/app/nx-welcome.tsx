@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Logo from "public/logo.png";
 import { getData, postData } from "src/lib/api";
 import { useSearch } from "src/lib/useSearchAtom";
+import toast from "react-hot-toast";
 
 interface CartItem extends GetProduct {
   count: number
@@ -144,6 +145,7 @@ export function Main({ title }: { title: string }) {
   const order = async () => {
     const response = await postData('/order', { name, phone, cart });
     console.log(response);
+    toast('주문 완료!', { icon: '🚀' });
     onClose();
   }
 
