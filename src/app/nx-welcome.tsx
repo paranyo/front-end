@@ -43,7 +43,6 @@ export function useCart() {
   const [cart, setCart] = useAtom(cartAtom)
 
   const handleAddCart = (item: CartItem) => {
-    console.log(item.name)
     if (alreadyInCart(item.name)) {
       return;
     }
@@ -99,6 +98,7 @@ export function useCart() {
     if (!cartFromLocalStorage) return;
     setCart(cartFromLocalStorage);
   }, [setCart])
+
   return {
     cart,
     handleAddCart,
@@ -122,7 +122,6 @@ export function Main({ title }: { title: string }) {
 
   const getProductDetail = async (barcode: string): Promise<GetProduct[]> => {
     const response = await getData<GetProduct[]>(`getProductDetail/${barcode}`);
-    console.log(response.result)
     return response.result;
   }
 
@@ -144,8 +143,7 @@ export function Main({ title }: { title: string }) {
 
   const order = async () => {
     const response = await postData('/order', { name, phone, cart });
-    console.log(response);
-    toast('주문 완료!', { icon: '🚀' });
+    toast('주문이 접수되었습니다. 담당 매니저가 30분 내에 연락드리겠습니다.', { icon: '🚀' });
     onClose();
   }
 
@@ -157,7 +155,6 @@ export function Main({ title }: { title: string }) {
 
   const handleCart = (item: GetProduct) => {
     handleAddCart({ ...item, count: 1 })
-    console.log(item)
   }
 
   useEffect(() => {
@@ -167,9 +164,6 @@ export function Main({ title }: { title: string }) {
       })
     }
   }, [debounce])
-  useEffect(() => {
-    console.log(product)
-  }, [product])
   const shortenWords = (str: string, length = 26) => {
     let result = '';
     if (str.length > length) {
