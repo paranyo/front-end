@@ -1,13 +1,20 @@
 import { ChakraProvider } from '@chakra-ui/react'
-
-import Main from './nx-welcome'
+import Main from './search'
 import { Toaster } from 'react-hot-toast'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import Cart from './cart'
 
 export function App() {
   return (
     <ChakraProvider>
       <Toaster />
-      <Main title="asd" />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/aa" element={<Cart />} />
+          <Route path="/" element={<Main title={'mooluck'} />} />
+        </Routes>
+      </BrowserRouter>
     </ChakraProvider>
+
   )
 }
