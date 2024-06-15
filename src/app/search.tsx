@@ -122,7 +122,7 @@ export function Main({ title }: { title: string }) {
         (
           <Flex position={'sticky'} h="48px" bg='white' p="2" verticalAlign={'middle'} borderTop={'2px solid black'} bottom="0" maxW="400px" m="0 auto">
             <Text fontWeight={'bold'} ml="1" mt="1" fontSize={'xl'} flex="2">총 {cart.length}건 {(cart.reduce((acc, item) => { return acc + item.price * item.stock * item.count }, 0)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원</Text>
-            <Button flex="1" colorScheme="green" size="sm" w="40%" onClick={() => window.location.href = 'aa'}>
+            <Button flex="1" colorScheme="green" size="sm" w="40%" onClick={() => window.location.href = 'cart'}>
               장바구니
             </Button>
           </Flex>

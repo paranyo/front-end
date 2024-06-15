@@ -10,7 +10,7 @@ export function App() {
       <Toaster />
       <BrowserRouter>
         <Routes>
-          <Route path="/aa" element={<Cart />} />
+          <Route path="/cart" element={<Cart />} />
           <Route path="/" element={<Main title={'mooluck'} />} />
         </Routes>
       </BrowserRouter>
