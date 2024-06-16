@@ -1,17 +1,35 @@
 import { ChevronLeftIcon } from "@chakra-ui/icons";
-import { Box, Button, Divider, Flex, Input, Text, } from "@chakra-ui/react";
+import { Badge, Box, Button, Divider, Flex, Input, Slide, Tag, Text, } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { useCart } from "./useAtom";
-import { shortenWords } from "./utils";
+import { shortenWords, toWon } from "./utils";
 import { postData } from "src/lib/api";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
+const BadgeColor = ["whiteAlpha", "blackAlpha", "gray", "red", "orange", "yellow", "green", "teal", "blue", "cyan", "purple", "pink"];
+
 export function Cart() {
-  const { cart, handleRemoveCart, ItemIncrease, ItemDecrease } = useCart();
+  const { cart, handleRemoveCart, ItemIncrease, ItemDecrease, mall } = useCart();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
 
+  const [position, setPosition] = useState(window.scrollY);
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const moving = window.scrollY;
+      if (document.documentElement.scrollHeight - document.documentElement.clientHeight === moving) {
+        setVisible(true);
+      } else {
+        setVisible(position > moving)
+        setPosition(moving);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [position])
 
   const onChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
@@ -26,7 +44,7 @@ export function Cart() {
   }
 
   return (
-    <Box>
+    <Box maxW="400px" m="0 auto">
       <Box w="100%" pos="sticky" h="48px" p="3" borderBottom={'2px solid black'} top="0" bg="white" zIndex={"3"}>
         <Link to="/">
           <ChevronLeftIcon boxSize={"24px"} pos="absolute" />
@@ -39,12 +57,20 @@ export function Cart() {
           return (
             <Box border="2px solid black" p={[3, 6]} m={2} borderRadius={8} background="white">
               <Text fontWeight={'bold'}>{shortenWords(item.name)}</Text>
-              <Text fontWeight={'bold'}>{(item.price).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원 / {item.stock}개 / {item.Mall.name}</Text>
+              <Flex alignItems={'center'} >
+                <Text fontWeight={'bold'} textDecor={'underline'}>{toWon(item.price * item.stock)}원</Text>
+                <Text fontSize={'small'}>({toWon(item.price)}원 * {item.stock}개)</Text>
+                <Text ml="2" mr="2">|</Text>
+                <Box>
+                  <Badge size="lg" colorScheme={BadgeColor[item.MallId]}>{item.Mall.name}</Badge>
+                </Box>
+              </Flex>
+              <Text fontSize={'sm'}>유통기한 | {item.expiration.length > 1 ? item.expiration : '알 수 없음'}</Text>
               <Flex gap="2" mt={2}>
-                <Text fontWeight="bolder">주문 개수 {item.count}개</Text>
-                <Button size="sm" colorScheme="green" onClick={() => ItemIncrease(item.name)}>추가</Button>
-                <Button size="sm" colorScheme="green" onClick={() => ItemDecrease(item.name)}>빼기</Button>
-                <Button size="sm" colorScheme="red" variant="outline" onClick={() => handleRemoveCart(item.name)}>삭제</Button>
+                <Text fontWeight="bolder">{item.count}개 ({toWon(item.price * item.stock * item.count)}원)</Text>
+                <Button size="sm" colorScheme="green" onClick={() => ItemIncrease(item.name)}>+</Button>
+                <Button size="sm" colorScheme="yellow" onClick={() => ItemDecrease(item.name)}>-</Button>
+                <Button size="sm" variant="outline" colorScheme="red" onClick={() => handleRemoveCart(item.name)}>삭제</Button>
               </Flex>
             </Box>
           )
@@ -54,7 +80,11 @@ export function Cart() {
       {cart.length > 0 && (
         <Box>
           <Box textAlign={'center'} background="#f0f0f0" p="4">
-            <Text fontWeight="bolder" textAlign={'center'} fontSize="2xl">합계 금액 {(cart.reduce((acc, item) => { return acc + item.price * item.stock * item.count }, 0)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원</Text>
+            <Text fontWeight="bolder" textAlign={'center'} fontSize="2xl">합계 금액 {toWon(cart.reduce((acc, item) => { return acc + item.price * item.stock * item.count }, 0))}원</Text>
+            <Text textAlign={'center'} fontSize="md">
+              상품 합계: {toWon(cart.reduce((acc, item) => { return acc + item.price * item.stock * item.count }, 0))}원 + 배송비: {toWon(mall.reduce((acc, item) => { return acc + (item.free > item.price ? item.deliveryFee * Math.ceil(item.price / item.option) : 0) }, 0))}원
+            </Text>
+            <Divider m="2" />
             <Text fontSize="xs"> * 주문하기 클릭 시, MooLuck에서 확인 후 연락 드립니다.</Text>
             <Text fontSize="xs"> * 배송비는 최종 주문서에서 별도 안내 드립니다. </Text>
           </Box>
@@ -64,7 +94,7 @@ export function Cart() {
             </Text>
             <Input border="2px solid black" placeholder="이름" onChange={onChangeName} value={name} mb="2" />
             <Input border="2px solid black" placeholder="전화번호" onChange={onChangePhone} value={phone} mb="2" />
-            <Button w="100%" onClick={() => order()} colorScheme="blue">주문 완료하기</Button>
+            <Button w="100%" onClick={() => order()} colorScheme="blue" isDisabled={name.length < 1 || phone.length < 1}>주문 완료하기</Button>
             <Divider m="4" />
             <Text textAlign={'center'} fontWeight={'bold'} fontSize="lg">주문 완료 시 담당 매니저가 연락드립니다.</Text>
             <Text textAlign={'center'}>*영업 시간 오전 10시 ~ 오후 12시</Text>
@@ -82,9 +112,40 @@ export function Cart() {
             <Button mt={2} bg='#ffe300' color="black" w="100%" onClick={() => window.open("http://pf.kakao.com/_HDucG/chat")}>상담원 문의하기</Button>
           </Box>
         </Box>
-      )}
+      )
+      }
 
-    </Box>
+      <Slide in={!visible} direction="bottom">
+        <Box bg='white' p="3" borderRadius={'12px 12px 0 0'} borderTop="2px solid black" borderLeft="2px solid black" borderRight="2px solid black">
+          {mall && mall.length > 0 &&
+            <Box>
+              <Text fontSize={'xs'} fontWeight="bold">배송료 합계</Text>
+              {mall.map((item) => {
+                if (item.price !== 0) {
+                  return (
+                    <Flex flexDir={'row'} gap={1} key={item.id} alignItems={'center'}>
+                      <Box flex="1" alignContent={'center'}>
+                        <Badge size="sm" colorScheme={BadgeColor[item.id]}>{item.name}</Badge>
+                      </Box>
+                      {/* <Box flex="2" alignContent={'center'}>
+                            <Progress size="xs" value={item.price / (item.free / 100)} max={100} colorScheme="pink" />
+                          </Box> */}
+                      <Text textAlign="center" alignContent="center" fontSize="sm" flex="2.4">({toWon(item.price)}원/{toWon(item.free)}원)</Text>
+                      <Box flex="1" alignContent={'center'} textAlign={'center'} >
+                        {item.free <= item.price ?
+                          <Tag size="sm" colorScheme="green">무료 배송</Tag>
+                          : <Tag size="sm">+ {Math.ceil(item.price / item.option) * item.deliveryFee}원</Tag>
+                        }
+                      </Box>
+                    </Flex>
+                  )
+                }
+              })}
+            </Box>
+          }
+        </Box>
+      </Slide>
+    </Box >
   );
 }
 

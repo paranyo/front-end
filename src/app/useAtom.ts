@@ -1,6 +1,6 @@
 import { atom, useAtom } from "jotai";
-import { CartItem, GetProduct } from "./interface";
-import { useEffect } from "react";
+import { CartItem, GetProduct, Mall } from "./interface";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 const cartAtom = atom<CartItem[]>([]);
@@ -64,8 +64,43 @@ export function useCart() {
     setCart(cartFromLocalStorage);
   }, [setCart])
 
+
+  const [mall, setMall] = useState<Mall[]>([]);
+
+  const initMall = () => {
+    setMall([
+      { id: 1, name: "준인터내셔날", price: 0, free: 100000, deliveryFee: 2800, option: 50000 },
+      { id: 2, name: "현동몰", price: 0, free: 300000, deliveryFee: 3000, option: 50000 },
+      { id: 3, name: "과자생각", price: 0, free: 150000, deliveryFee: 3000, option: 50000 },
+      { id: 4, name: "무마켓", price: 0, free: 150000, deliveryFee: 3000, option: 150000 },
+      { id: 5, name: "삼봉몰", price: 0, free: 100000, deliveryFee: 3000, option: 50000 },
+      { id: 6, name: "또요몰", price: 0, free: 150000, deliveryFee: 3000, option: 150000 },
+      // { id: 7, name: "달달몰", price: 0, free: 30000, deliveryFee: 10000, option: 150000 },
+    ])
+  }
+  useEffect(() => {
+    initMall();
+  }, []);
+
+  useEffect(() => {
+    console.log('33')
+    initMall();
+    cart.map((item) => {
+      setMall((prev) => {
+        return prev.map((mall) => {
+          if (mall.id === item.MallId) {
+            return { ...mall, price: mall.price + item.price * item.stock * item.count }
+          }
+          return mall;
+        })
+      })
+    })
+  }, [cart])
+
   return {
     cart,
+    mall,
+    setCart,
     handleAddCart,
     clearCart,
     handleRemoveCart,

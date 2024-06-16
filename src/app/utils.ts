@@ -19,9 +19,14 @@ const useDebounce = (value: string, delay: number) => {
     return () => clearTimeout(timer);
   }, [value, delay])
   return debouncedValue
-
 }
+
+const toWon = (price: number) => {
+  return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 export {
   shortenWords,
-  useDebounce
+  useDebounce,
+  toWon
 }
