@@ -43,6 +43,18 @@ export function Cart() {
     toast('주문이 접수되었습니다. 담당 매니저가 30분 내에 연락드리겠습니다.', { icon: '🚀' });
   }
 
+  const cartData = async () => {
+    if (localStorage.getItem('cart') !== null) {
+      const cart = localStorage.getItem('cart') as string;
+      const aa = JSON.parse(cart)
+      const response = await postData('/cart', { name, phone, cart: aa });
+    }
+  }
+
+  useEffect(() => {
+    cartData()
+  }, [])
+
   return (
     <Box maxW="400px" m="0 auto">
       <Box w="100%" pos="sticky" h="48px" p="3" borderBottom={'2px solid black'} top="0" bg="white" zIndex={"3"}>
@@ -80,13 +92,13 @@ export function Cart() {
       {cart.length > 0 && (
         <Box>
           <Box textAlign={'center'} background="#f0f0f0" p="4">
-            <Text fontWeight="bolder" textAlign={'center'} fontSize="2xl">합계 금액 {toWon(cart.reduce((acc, item) => { return acc + item.price * item.stock * item.count }, 0))}원</Text>
+            <Text fontWeight="bolder" textAlign={'center'} fontSize="2xl">합계 금액 {toWon(cart.reduce((acc, item) => { return acc + item.price * item.stock * item.count }, 0) + mall.reduce((acc, item) => { return acc + (item.free > item.price ? item.deliveryFee * Math.ceil(item.price / item.option) : 0) }, 0))}원</Text>
+
             <Text textAlign={'center'} fontSize="md">
               상품 합계: {toWon(cart.reduce((acc, item) => { return acc + item.price * item.stock * item.count }, 0))}원 + 배송비: {toWon(mall.reduce((acc, item) => { return acc + (item.free > item.price ? item.deliveryFee * Math.ceil(item.price / item.option) : 0) }, 0))}원
             </Text>
             <Divider m="2" />
-            <Text fontSize="xs"> * 주문하기 클릭 시, MooLuck에서 확인 후 연락 드립니다.</Text>
-            <Text fontSize="xs"> * 배송비는 최종 주문서에서 별도 안내 드립니다. </Text>
+            <Text fontSize="xs"> * 주문하기 클릭 시 MooLuck의 매니저가 확인 후 연락 드립니다.</Text>
           </Box>
           <Box p="4">
             <Text textAlign={'center'} fontSize="xl" fontWeight={'bold'} mb="4">
@@ -119,7 +131,7 @@ export function Cart() {
         <Box bg='white' p="3" borderRadius={'12px 12px 0 0'} borderTop="2px solid black" borderLeft="2px solid black" borderRight="2px solid black">
           {mall && mall.length > 0 &&
             <Box>
-              <Text fontSize={'xs'} fontWeight="bold">배송료 합계</Text>
+              <Text fontSize={'xs'} fontWeight="bold">배송비 안내</Text>
               {mall.map((item) => {
                 if (item.price !== 0) {
                   return (

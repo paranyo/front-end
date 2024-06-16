@@ -1,4 +1,4 @@
-import { Badge, Box, Button, Divider, Flex, Image, Input, SimpleGrid, Slide, Tag, Text, } from "@chakra-ui/react";
+import { Badge, Box, Button, Collapse, Divider, Flex, Image, Input, SimpleGrid, Slide, Tag, Text, useDisclosure, } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import Logo from "public/logo.png";
 import { getData, postData } from "src/lib/api";
@@ -6,12 +6,13 @@ import { useSearch } from "src/lib/useSearchAtom";
 import { Data, GetProduct, } from "./interface"
 import { useCart } from "./useAtom";
 import { shortenWords, toWon, useDebounce } from "./utils";
+import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 
 const BadgeColor = ["whiteAlpha", "blackAlpha", "gray", "red", "orange", "yellow", "green", "teal", "blue", "cyan", "purple", "pink"];
 
 export function Main({ title }: { title: string }) {
   const { cart, mall, handleAddCart } = useCart();
-
+  const { isOpen, onToggle } = useDisclosure();
   const [loading, setLoading] = useState(false);
   const { TextSearch } = useSearch();
   const debounce = useDebounce(TextSearch.value, 1000);
@@ -35,6 +36,7 @@ export function Main({ title }: { title: string }) {
   };
 
   const onClickProduct = (barcode: string) => {
+    onToggle()
     getProductDetail(barcode).then((data) => {
       setProduct(data);
     })
@@ -46,6 +48,7 @@ export function Main({ title }: { title: string }) {
     if (debounce) {
       getProduct(debounce).then((data) => {
         setArray(data);
+        onToggle()
         setLoading(false);
       })
     }
@@ -76,37 +79,40 @@ export function Main({ title }: { title: string }) {
         </Box>
         <Box mt={4} p="4" mr={'2'} ml={'2'}>
           <Input onChange={TextSearch.onChange} value={TextSearch.value} placeholder="상품명을 입력해주세요. (자동 검색)" textAlign={'center'} border="2px solid black" autoComplete="true" />
+          {isOpen === false && array.length > 0 &&
+            <Button mt="2" leftIcon={<ChevronDownIcon />} colorScheme="blue" w="100%" onClick={() => onToggle()} size="sm">
+              펼치기
+            </Button>
+          }
         </Box>
         <Box>
           {array.length > 0 &&
-            (<Box pl="4" pr="4">
-              <Text ml="2" mr="2" fontSize="lg" fontWeight={'bold'}>아래 상품 중 검색 대상을 클릭해주세요</Text>
-              <SimpleGrid columns={2}>
-                {array.map((item) => {
-                  return (
-                    <Box flexDir={'column'} border="2px solid black" borderRadius={4} p={[2, 2]} m={3} onClick={() => onClickProduct(item.barcode)} >
-                      {/* <Text>{shortenWords(item.name)}</Text> */}
-                      <Box flex="1" mb="1" >
-                        {(item && item.image) ?
-                          <Image src={item.image} /> :
-                          <Image src="https://soonroom.s3.ap-northeast-2.amazonaws.com/notfoundProduct.png" />}
+            (<Box><Collapse in={isOpen} animateOpacity>
+              <Box pl="4" pr="4">
+                <Text ml="2" mr="2" fontSize="lg" fontWeight={'bold'}>아래 상품 중 검색 대상을 클릭해주세요</Text>
+                <SimpleGrid columns={2}>
+                  {array.map((item) => {
+                    return (
+                      <Box flexDir={'column'} border="2px solid black" borderRadius={4} p={[2, 2]} m={3} onClick={() => onClickProduct(item.barcode)} >
+                        {/* <Text>{shortenWords(item.name)}</Text> */}
+                        <Box flex="1" mb="1" >
+                          {(item && item.image) ?
+                            <Image src={item.image} /> :
+                            <Image src="https://soonroom.s3.ap-northeast-2.amazonaws.com/notfoundProduct.png" />}
+                        </Box>
+                        <Text flex="3">{item.name}</Text>
                       </Box>
-                      <Text flex="3">{item.name}</Text>
-                    </Box>
-                  )
-                })}
-                {/* <Box flexDir={'column'} border="2px solid black" borderRadius={4} p={[2, 2]} m={3} onClick={() => alert('더보기')} >
-                  더보기?
-                </Box> */}
-              </SimpleGrid>
-
+                    )
+                  })}
+                </SimpleGrid>
+              </Box>
+            </Collapse>
             </Box>) || (
               TextSearch.value.length > 0 && !loading &&
               <Box minH="600px" alignContent={'center'} p="4">
                 <Text textAlign="center" p={[0, 2]} fontSize="2xl" fontWeight={'bold'}>검색 결과가 없습니다.</Text>
-              </Box>
-            )
-          }
+              </Box>)}
+
           {product.length > 0 &&
             <Box background={'#f0f0f0'} p={4}>
               <Text p={[0, 2]} fontSize="lg" fontWeight={'bold'}>상품 상세</Text>
@@ -153,7 +159,7 @@ export function Main({ title }: { title: string }) {
           <Box verticalAlign={'middle'} maxW="400px">
             <Slide in={!visible} direction="bottom">
               <Box mb="48px" bg='white' p="3" borderRadius={'12px 12px 0 0'} borderTop="2px solid black" borderLeft="2px solid black" borderRight="2px solid black">
-                <Text fontSize={'xs'} fontWeight="bold">배송료 합계</Text>
+                <Text fontSize={'xs'} fontWeight="bold">배송비 안내</Text>
                 {mall && mall.length > 0 &&
                   mall.map((item) => {
                     if (item.price !== 0) {
