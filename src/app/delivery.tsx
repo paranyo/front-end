@@ -41,6 +41,8 @@ export function Delivery() {
         <Text fontSize={12} fontWeight={'bold'} textAlign={'center'} mb='2'>
           안내받으신 금액과 함께 안내된 계좌번호에 최종 입금을 해주셔야 배송이 시작됩니다.
         </Text>
+
+        <Button size="sm" bg='#ffe300' color="black" w="100%" onClick={() => window.open("http://pf.kakao.com/_HDucG/chat")}>상담원 문의하기</Button>
       </Box>
       <Text fontWeight={'bold'} fontSize={'lg'} mt="3" ml="3">
         상품 참고 내용
