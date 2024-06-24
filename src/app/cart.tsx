@@ -97,8 +97,9 @@ export function Cart() {
             <Text textAlign={'center'} fontSize="md">
               상품 합계: {toWon(cart.reduce((acc, item) => { return acc + item.price * item.stock * item.count }, 0))}원 + 배송비: {toWon(mall.reduce((acc, item) => { return acc + (item.free > item.price ? item.deliveryFee * Math.ceil(item.price / item.option) : 0) }, 0))}원
             </Text>
+            <Text mt="2" textAlign={'center'} fontWeight={'bold'} fontSize="md">계좌번호: 신한 110-473-003743 한규태(리오)</Text>
             <Divider m="2" />
-            <Text fontSize="xs" fontWeight={'bold'}> · 주문을 접수하시고 아래 계좌로 입금하시면 주문이 시작됩니다.</Text>
+            <Text fontSize="xs" fontWeight={'bold'}> · 주문을 접수하시고 위 계좌로 입금하시면 주문이 시작됩니다.</Text>
             <Text fontSize="xs"> · 도매몰 사정에 의해 품절, 배송곤란 등의 상품은 환불됩니다.</Text>
             <Text fontSize="xs"> · 세금계산서는 매니저가 직접 연락 후 발행해 드립니다.</Text>
           </Box>
@@ -110,13 +111,11 @@ export function Cart() {
             <Input border="2px solid black" placeholder="전화번호" onChange={onChangePhone} value={phone} mb="2" />
             <Button w="100%" onClick={() => order()} colorScheme="blue" isDisabled={name.length < 1 || phone.length < 1}>주문 완료하기</Button>
             <Divider m="4" />
-            <Text textAlign={'center'} fontWeight={'bold'} fontSize="lg">주문 완료 시 담당 매니저가 연락드립니다.</Text>
+            <Text textAlign={'center'} fontWeight={'bold'} fontSize="lg">결제 문의: 010-2691-3194</Text>
             <Text textAlign={'center'}>*영업 시간 오전 10시 ~ 오후 12시</Text>
-            <Divider m="4" />
-            <Text fontWeight={'bold'} fontSize="lg">*안내사항*</Text>
-            <Text fontSize="sm"> 업체 사정에 따른 품절 및 배송 조건 변동이 있을 수 있습니다. 이 경우 결제 금액도 함께 변동될 수 있으니, 이 점 양해 부탁드립니다. </Text>
+            <Divider m="2" />
           </Box>
-          <Box p={[4, 6]}>
+          <Box pl="4" pr="4">
             <Text fontSize="xs">・재고 및 판매 가격은 도매몰 상황에 따라 달라질 수 있습니다.</Text>
             <Text fontSize="xs">・도매몰마다 최소 주문 수량이나, 무료배송 조건, 배송 가능 여부의 차이가 있을 수 있습니다.</Text>
             <Text fontSize="xs">・[무럭]은 각 도매몰의 상품 정보 중개자로서, 상품의 배송 책임은 해당 도매몰에 있습니다.</Text>
