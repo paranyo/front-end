@@ -156,9 +156,9 @@ export function Main({ title }: { title: string }) {
       </Box>
       {cart.length > 0 &&
         (
-          <Box verticalAlign={'middle'} maxW="400px">
+          <Box>
             <Slide in={!visible} direction="bottom">
-              <Box mb="48px" bg='white' p="3" borderRadius={'12px 12px 0 0'} borderTop="2px solid black" borderLeft="2px solid black" borderRight="2px solid black">
+              <Box m="0 auto" mb="48px" bg='white' p="3" borderRadius={'12px 12px 0 0'} borderTop="2px solid black" borderLeft="2px solid black" borderRight="2px solid black" verticalAlign={'middle'} maxW="400px">
                 <Text fontSize={'xs'} fontWeight="bold">배송비 안내</Text>
                 {mall && mall.length > 0 &&
                   mall.map((item) => {
@@ -186,7 +186,7 @@ export function Main({ title }: { title: string }) {
               </Box>
             </Slide>
             <Slide in={true} direction="bottom">
-              <Flex h="48px" p="2" borderTop={'2px solid black'} bg='white'>
+              <Flex h="48px" p="2" borderTop={'2px solid black'} bg='white' verticalAlign={'middle'} maxW="400px" m="0 auto">
                 <Text fontWeight={'bold'} ml="1" mt="1" fontSize={'xl'} flex="2">총 {cart.length}건 {toWon(cart.reduce((acc, item) => { return acc + item.price * item.stock * item.count }, 0))}원</Text>
                 <Button flex="1" colorScheme="green" size="sm" w="40%" onClick={() => window.location.href = 'cart'}>
                   장바구니

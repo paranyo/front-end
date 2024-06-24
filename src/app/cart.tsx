@@ -98,7 +98,9 @@ export function Cart() {
               상품 합계: {toWon(cart.reduce((acc, item) => { return acc + item.price * item.stock * item.count }, 0))}원 + 배송비: {toWon(mall.reduce((acc, item) => { return acc + (item.free > item.price ? item.deliveryFee * Math.ceil(item.price / item.option) : 0) }, 0))}원
             </Text>
             <Divider m="2" />
-            <Text fontSize="xs"> * 주문하기 클릭 시 MooLuck의 매니저가 확인 후 연락 드립니다.</Text>
+            <Text fontSize="xs" fontWeight={'bold'}> · 주문을 접수하시고 아래 계좌로 입금하시면 주문이 시작됩니다.</Text>
+            <Text fontSize="xs"> · 도매몰 사정에 의해 품절, 배송곤란 등의 상품은 환불됩니다.</Text>
+            <Text fontSize="xs"> · 세금계산서는 매니저가 직접 연락 후 발행해 드립니다.</Text>
           </Box>
           <Box p="4">
             <Text textAlign={'center'} fontSize="xl" fontWeight={'bold'} mb="4">
@@ -128,7 +130,7 @@ export function Cart() {
       }
 
       <Slide in={!visible} direction="bottom">
-        <Box bg='white' p="3" borderRadius={'12px 12px 0 0'} borderTop="2px solid black" borderLeft="2px solid black" borderRight="2px solid black">
+        <Box m="0 auto" verticalAlign="middle" maxW="400px" bg='white' p="3" borderRadius={'12px 12px 0 0'} borderTop="2px solid black" borderLeft="2px solid black" borderRight="2px solid black">
           {mall && mall.length > 0 &&
             <Box>
               <Text fontSize={'xs'} fontWeight="bold">배송비 안내</Text>
