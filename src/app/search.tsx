@@ -1,6 +1,7 @@
 import { Badge, Box, Button, Collapse, Divider, Flex, Image, Input, SimpleGrid, Slide, Tag, Text, useDisclosure, } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import Logo from "public/logo.png";
+import Kakao from "public/kakao.png"
 import { getData, postData } from "src/lib/api";
 import { useSearch } from "src/lib/useSearchAtom";
 import { Data, GetProduct, } from "./interface"
@@ -73,12 +74,13 @@ export function Main({ title }: { title: string }) {
 
   return (
     <Box w="100%" pos="relative" >
-      <Box maxW={'400px'} m="0 auto">
-        <Box w='100%' h='64px' p="4" >
+      <Box maxW={'400px'} m="0 auto" maxH="64px">
+        <Box w='100%' pl="4" pr="4">
           <Image src={Logo} />
         </Box>
-        <Box mt={4} p="4" mr={'2'} ml={'2'}>
-          <Input onChange={TextSearch.onChange} value={TextSearch.value} placeholder="상품명을 입력해주세요. (자동 검색)" textAlign={'center'} border="2px solid black" autoComplete="true" />
+        <Box mt={2} pl="4" pr="4">
+          <Button leftIcon={<Image src={Kakao} w="16px" />} bg='#ffe300' size="sm" color="black" w="100%" onClick={() => window.open("http://pf.kakao.com/_HDucG/chat")}>상담원 문의하기</Button>
+          <Input mt={2} onChange={TextSearch.onChange} value={TextSearch.value} placeholder="상품명을 입력해주세요. (자동 검색)" textAlign={'center'} border="2px solid black" autoComplete="true" />
           {isOpen === false && array.length > 0 &&
             <Button mt="2" leftIcon={<ChevronDownIcon />} colorScheme="blue" w="100%" onClick={() => onToggle()} size="sm">
               펼치기
