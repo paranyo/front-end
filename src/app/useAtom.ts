@@ -75,6 +75,7 @@ export function useCart() {
       { id: 4, name: "무마켓", price: 0, free: 150000, deliveryFee: 3000, option: 150000 },
       { id: 5, name: "삼봉몰", price: 0, free: 100000, deliveryFee: 3000, option: 50000 },
       { id: 6, name: "또요몰", price: 0, free: 150000, deliveryFee: 3000, option: 150000 },
+      { id: 8, name: "아이씨마켓", price: 0, free: 100000, deliveryFee: 4000, option: 100000 },
       // { id: 7, name: "달달몰", price: 0, free: 30000, deliveryFee: 10000, option: 150000 },
     ])
   }
