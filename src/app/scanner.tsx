@@ -47,8 +47,8 @@ export function Scanner() {
   }
   useEffect(() => {
     navigator.mediaDevices.getUserMedia({
-      video: { facingMode: "user" }, //전면
-      // video: { facingMode: { exact: "environment" } }, //후면
+      // video: { facingMode: "user" }, //전면
+      video: { facingMode: { exact: "environment" } }, //후면
     })
       .then(stream => {
         console.log(stream);
