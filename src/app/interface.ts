@@ -15,6 +15,18 @@ interface GetProduct {
     name: string
   }
 }
+
+interface GetStoreProduct {
+  isInProduct: string,
+  isInStoreProduct: {
+    StoreId: number,
+    barcode: number,
+    price?: number,
+    Expire?: string,
+    stock: number,
+  }
+}
+
 interface Data {
   name: string,
   barcode: string,
@@ -33,6 +45,7 @@ interface Mall {
 export {
   CartItem,
   GetProduct,
+  GetStoreProduct,
   Data,
-  Mall
+  Mall,
 }
