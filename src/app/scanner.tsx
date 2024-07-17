@@ -13,7 +13,7 @@ export function Scanner() {
   const formats = [BarcodeFormat.QR_CODE, BarcodeFormat.DATA_MATRIX, BarcodeFormat.CODE_128, BarcodeFormat.CODABAR, BarcodeFormat.EAN_13, BarcodeFormat.EAN_8, BarcodeFormat.CODE_39, BarcodeFormat.CODE_93];
   hints.set(DecodeHintType.POSSIBLE_FORMATS, formats);
   const Scan = new BrowserMultiFormatReader(hints, 500);
-  const [text, setText] = useState('')
+  const [barcode, setBarcode] = useState('')
   const [name, setName] = useState('');
   const [stock, setStock] = useState(0);
   const [price, setPrice] = useState(0);
@@ -28,10 +28,10 @@ export function Scanner() {
       try {
         const data = await Scan.decodeFromStream(localStream, Camera.current, (data, err) => {
           if (data) {
-            setText(data.getText());
+            setBarcode(data.getText());
             Scan.stopContinuousDecode();
           }
-          else setText("");
+          else setBarcode("");
         });
       } catch (error) { console.log(error) }
     }
@@ -66,6 +66,9 @@ export function Scanner() {
   const onChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
   }
+  const onChangeBarcode = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setBarcode(e.target.value);
+  }
   const onChangeStock = (e: React.ChangeEvent<HTMLInputElement>) => {
     setStock(+e.target.value);
   }
@@ -81,7 +84,7 @@ export function Scanner() {
     setStock(0);
     setPrice(0);
     setExpiration('');
-    setText('');
+    setBarcode('');
   }
 
   const initScan = () => {
@@ -91,13 +94,13 @@ export function Scanner() {
   }
 
   const onSubmit = async () => {
-    const response = await postData('/storeProduct', { barcode: text, name, stock, price, expiration });
+    const response = await postData('/storeProduct', { barcode, name, stock, price, expiration });
     toast(response.result ? '등록 성공!' : '등록 실패.. 관리자에게 문의해주세요.', { icon: '🚀' });
     initScan()
   }
 
   const getProduct = async () => { // 간식 연구소 매장 전용
-    const response = await postData<GetStoreProduct>('/getStoreProduct', { barcode: text, id: 1 }).then(res => {
+    const response = await postData<GetStoreProduct>('/getStoreProduct', { barcode, id: 1 }).then(res => {
       return res.result ? res.result : null;
     });
     if (response !== null) {
@@ -115,10 +118,10 @@ export function Scanner() {
   }
 
   useEffect(() => {
-    if (text.length > 0) {
+    if (barcode.length > 0) {
       getProduct()
     }
-  }, [text])
+  }, [barcode])
 
   return (
     <Box>
@@ -130,7 +133,7 @@ export function Scanner() {
         {newFlag === 4 && <Text fontSize="xl" textAlign="center" fontWeight={'bolder'}>제품을 스캔해주세요.</Text>}
 
         <Input placeholder="제품명" value={name} onChange={onChangeName} />
-        <Input placeholder="바코드" value={text} disabled />
+        <Input placeholder="바코드" value={barcode} onChange={onChangeBarcode} />
         <Input placeholder="재고 (5)" value={stock} onChange={onChangeStock} />
         <Input placeholder="가격 (1200)" value={price} onChange={onChangePrice} />
         <Input placeholder="유통기한 (24.03.03)" value={expiration} onChange={onChangeExpiration} />
