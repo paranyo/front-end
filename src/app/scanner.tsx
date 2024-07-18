@@ -5,6 +5,7 @@ import { postData } from 'src/lib/api';
 import { GetStoreProduct } from './interface';
 import { EditIcon, RepeatIcon } from '@chakra-ui/icons';
 import toast from 'react-hot-toast';
+import { useDebounce } from './utils';
 
 export function Scanner() {
   const [localStream, setLocalStream] = useState<MediaStream>();
@@ -14,11 +15,15 @@ export function Scanner() {
   hints.set(DecodeHintType.POSSIBLE_FORMATS, formats);
   const Scan = new BrowserMultiFormatReader(hints, 500);
   const [barcode, setBarcode] = useState('')
+  const [text, setText] = useState('')
   const [name, setName] = useState('');
   const [stock, setStock] = useState(0);
   const [price, setPrice] = useState(0);
   const [expiration, setExpiration] = useState('');
   const [newFlag, setNewFlag] = useState(4);
+
+  const debounce = useDebounce(barcode, 1000);
+
   // const req = useRef<any>();
 
   const Scanning = async () => {
@@ -28,10 +33,10 @@ export function Scanner() {
       try {
         const data = await Scan.decodeFromStream(localStream, Camera.current, (data, err) => {
           if (data) {
-            setBarcode(data.getText());
+            setText(data.getText());
             Scan.stopContinuousDecode();
           }
-          else setBarcode("");
+          else setText("");
         });
       } catch (error) { console.log(error) }
     }
@@ -85,6 +90,7 @@ export function Scanner() {
     setPrice(0);
     setExpiration('');
     setBarcode('');
+    setText('');
   }
 
   const initScan = () => {
@@ -118,10 +124,15 @@ export function Scanner() {
   }
 
   useEffect(() => {
-    if (barcode.length > 0) {
+    if (debounce) {
       getProduct()
     }
-  }, [barcode])
+  }, [debounce])
+
+
+  useEffect(() => {
+    if (text.length > 0) { setBarcode(text); }
+  }, [text])
 
   return (
     <Box>
