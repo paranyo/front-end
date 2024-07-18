@@ -51,6 +51,17 @@ export function Scanner() {
       });
     }
   }
+  // useEffect(() => {
+  //   navigator.mediaDevices.getUserMedia({
+  //     video: { facingMode: camMode === true ? 'user' : { exact: "environment" } }, //전면
+  //   })
+  //     .then(stream => {
+  //       console.log(stream);
+  //       setLocalStream(stream);
+  //     })
+  //   return () => { Stop(); }
+  // }, []);
+
   useEffect(() => {
     navigator.mediaDevices.getUserMedia({
       video: { facingMode: camMode === true ? 'user' : { exact: "environment" } }, //전면
@@ -60,7 +71,7 @@ export function Scanner() {
         setLocalStream(stream);
       })
     return () => { Stop(); }
-  }, []);
+  }, [camMode]);
 
   useEffect(() => {
     if (!Camera.current) return;
