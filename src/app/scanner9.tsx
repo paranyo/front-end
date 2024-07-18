@@ -20,8 +20,6 @@ export function Scanner() {
   const [stock, setStock] = useState(0);
   const [expiration, setExpiration] = useState('');
   const [newFlag, setNewFlag] = useState(4);
-  const [camMode, setCamMode] = useState(false);
-
 
   const debounce = useDebounce(barcode, 1000);
 
@@ -51,32 +49,17 @@ export function Scanner() {
       });
     }
   }
-  // useEffect(() => {
-  //   navigator.mediaDevices.getUserMedia({
-  //     video: { facingMode: camMode === true ? 'user' : { exact: "environment" } }, //전면
-  //   })
-  //     .then(stream => {
-  //       console.log(stream);
-  //       setLocalStream(stream);
-  //     })
-  //   return () => { Stop(); }
-  // }, []);
-
   useEffect(() => {
     navigator.mediaDevices.getUserMedia({
-      audio: false,
-      video: {
-        facingMode: camMode === true ? 'user' : { exact: "environment" },
-        width: { min: 640, ideal: 1280, max: 1920 },
-        height: { min: 480, ideal: 720, max: 1080 },
-      },
+      // video: { facingMode: "user" }, //전면
+      video: { facingMode: { exact: "environment" } }, //후면
     })
       .then(stream => {
         console.log(stream);
         setLocalStream(stream);
       })
     return () => { Stop(); }
-  }, [camMode]);
+  }, []);
 
   useEffect(() => {
     if (!Camera.current) return;
@@ -112,13 +95,13 @@ export function Scanner() {
   }
 
   const onSubmit = async () => {
-    const response = await postData('/storeProduct', { barcode, name, stock, expiration, StoreId: 6 });
+    const response = await postData('/storeProduct', { barcode, name, stock, expiration, StoreId: 9 });
     toast(response.result ? '등록 성공!' : '등록 실패.. 관리자에게 문의해주세요.', { icon: '🚀' });
     initScan()
   }
 
   const getProduct = async () => {
-    const response = await postData<GetStoreProduct>('/getStoreProduct', { barcode, id: 6 }).then(res => {
+    const response = await postData<GetStoreProduct>('/getStoreProduct', { barcode, id: 9 }).then(res => {
       return res.result ? res.result : null;
     });
     if (response !== null) {
@@ -148,6 +131,7 @@ export function Scanner() {
   return (
     <Box>
       <Flex flexDir={'column'} gap="2" m="6">
+        <Text>아이즈크림 성남아튼빌점</Text>
         {newFlag === 0 && <Text fontSize="xl" textAlign="center" fontWeight={'bolder'}>기존 상품입니다</Text>}
         {newFlag === 1 && <Text fontSize="xl" textAlign="center" fontWeight={'bolder'}>신상품입니다.</Text>}
         {newFlag === 2 && <Text fontSize="xl" textAlign="center" fontWeight={'bolder'}>매장 전용 상품인 것 같습니다.</Text>}
@@ -163,7 +147,6 @@ export function Scanner() {
         <Box>
           <video ref={Camera} id="video" />
         </Box>
-        <Button onClick={() => setCamMode(!camMode)}>{camMode ? '후면' : '전면'} 카메라</Button>
       </Flex>
     </Box>
   );
