@@ -18,7 +18,6 @@ export function Scanner() {
   const [text, setText] = useState('')
   const [name, setName] = useState('');
   const [stock, setStock] = useState(0);
-  const [price, setPrice] = useState(0);
   const [expiration, setExpiration] = useState('');
   const [newFlag, setNewFlag] = useState(4);
 
@@ -77,9 +76,6 @@ export function Scanner() {
   const onChangeStock = (e: React.ChangeEvent<HTMLInputElement>) => {
     setStock(+e.target.value);
   }
-  const onChangePrice = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPrice(+e.target.value);
-  }
   const onChangeExpiration = (e: React.ChangeEvent<HTMLInputElement>) => {
     setExpiration(e.target.value);
   }
@@ -87,7 +83,6 @@ export function Scanner() {
   const initData = () => {
     setName('');
     setStock(0);
-    setPrice(0);
     setExpiration('');
     setBarcode('');
     setText('');
@@ -100,20 +95,19 @@ export function Scanner() {
   }
 
   const onSubmit = async () => {
-    const response = await postData('/storeProduct', { barcode, name, stock, price, expiration, StoreId: 5 });
+    const response = await postData('/storeProduct', { barcode, name, stock, expiration, StoreId: 5 });
     toast(response.result ? '등록 성공!' : '등록 실패.. 관리자에게 문의해주세요.', { icon: '🚀' });
     initScan()
   }
 
-  const getProduct = async () => { // 간식 연구소 매장 전용
-    const response = await postData<GetStoreProduct>('/getStoreProduct', { barcode, id: 1 }).then(res => {
+  const getProduct = async () => {
+    const response = await postData<GetStoreProduct>('/getStoreProduct', { barcode, id: 5 }).then(res => {
       return res.result ? res.result : null;
     });
     if (response !== null) {
       setName(response.isInProduct ? response.isInProduct : '');
       if (response.isInStoreProduct !== null) {
         setStock(response.isInStoreProduct.stock ? response.isInStoreProduct.stock : 0);
-        setPrice(response.isInStoreProduct.price ? response.isInStoreProduct.price : 0);
         setExpiration(response.isInStoreProduct.Expire ? response.isInStoreProduct.Expire : '');
       }
       if (response.isInProduct !== '' && response.isInStoreProduct !== null) { setNewFlag(0); } // 도매몰에 있고 매장에 있는 상품 (재고)
@@ -146,7 +140,6 @@ export function Scanner() {
         <Input placeholder="제품명" value={name} onChange={onChangeName} />
         <Input placeholder="바코드" value={barcode} onChange={onChangeBarcode} />
         <Input placeholder="재고 (5)" value={stock} onChange={onChangeStock} />
-        <Input placeholder="가격 (1200)" value={price} onChange={onChangePrice} />
         <Input placeholder="유통기한 (24.03.03)" value={expiration} onChange={onChangeExpiration} />
         <Button onClick={onSubmit} leftIcon={<EditIcon />} colorScheme="teal">등록</Button>
         <Button onClick={initScan} leftIcon={<RepeatIcon />} colorScheme="yellow">초기화</Button>
