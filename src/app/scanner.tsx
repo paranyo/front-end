@@ -144,7 +144,7 @@ export function Scanner() {
         {newFlag === 4 && <Text fontSize="xl" textAlign="center" fontWeight={'bolder'}>제품을 스캔해주세요.</Text>}
 
         <Input placeholder="제품명" value={name} onChange={onChangeName} />
-        <Input placeholder="바코드" value={barcode} disabled />
+        <Input placeholder="바코드" value={barcode} onChange={onChangeBarcode} />
         <Input placeholder="재고 (5)" value={stock} onChange={onChangeStock} />
         <Input placeholder="가격 (1200)" value={price} onChange={onChangePrice} />
         <Input placeholder="유통기한 (24.03.03)" value={expiration} onChange={onChangeExpiration} />
