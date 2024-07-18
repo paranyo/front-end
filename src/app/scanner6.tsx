@@ -20,6 +20,8 @@ export function Scanner() {
   const [stock, setStock] = useState(0);
   const [expiration, setExpiration] = useState('');
   const [newFlag, setNewFlag] = useState(4);
+  const [camMode, setCamMode] = useState(false);
+
 
   const debounce = useDebounce(barcode, 1000);
 
@@ -51,8 +53,7 @@ export function Scanner() {
   }
   useEffect(() => {
     navigator.mediaDevices.getUserMedia({
-      // video: { facingMode: "user" }, //전면
-      video: { facingMode: { exact: "environment" } }, //후면
+      video: { facingMode: camMode === true ? 'user' : { exact: "environment" } }, //전면
     })
       .then(stream => {
         console.log(stream);
@@ -146,6 +147,7 @@ export function Scanner() {
         <Box>
           <video ref={Camera} id="video" />
         </Box>
+        <Button onClick={() => setCamMode(!camMode)}>{camMode ? '후면' : '전면'} 카메라</Button>
       </Flex>
     </Box>
   );
