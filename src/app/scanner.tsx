@@ -100,7 +100,7 @@ export function Scanner() {
   }
 
   const onSubmit = async () => {
-    const response = await postData('/storeProduct', { barcode, name, stock, price, expiration });
+    const response = await postData('/storeProduct', { barcode, name, stock, price, expiration, StoreId: 5 });
     toast(response.result ? '등록 성공!' : '등록 실패.. 관리자에게 문의해주세요.', { icon: '🚀' });
     initScan()
   }
