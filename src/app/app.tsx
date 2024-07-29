@@ -7,6 +7,7 @@ import Cart from './cart'
 import Delivery from './delivery'
 import Scanner from './scanner'
 import Scanner2 from './scanner2'
+import Scanner3 from './scanner3'
 import Scanner5 from './scanner5'
 import Scanner6 from './scanner6'
 import Scanner7 from './scanner7'
@@ -24,6 +25,7 @@ export function App() {
             <Route path="/delivery" element={<Delivery />} />
             <Route path="/scanner" element={<Scanner />} />
             <Route path="/scanner2" element={<Scanner2 />} />
+            <Route path="/scanner3" element={<Scanner3 />} />
             <Route path="/scanner5" element={<Scanner5 />} />
             <Route path="/scanner6" element={<Scanner6 />} />
             <Route path="/scanner7" element={<Scanner7 />} />
